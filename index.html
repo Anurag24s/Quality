@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QMS Pro — Advanced Quality Management</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Mobile Navigation Toggle -->
+    <div class="mobile-nav-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    
+    <!-- Sidebar with enhanced design -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fas fa-clipboard-check"></i>
+        </div>
+        <span>QMS Pro</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-page="dashboard">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" data-page="inspections">
+          <i class="fas fa-search"></i>
+          <span>Inspections</span>
+        </a>
+        <a class="nav-item" data-page="reports">
+          <i class="fas fa-chart-bar"></i>
+          <span>Reports</span>
+        </a>
+        <a class="nav-item" data-page="criteria">
+          <i class="fas fa-list-check"></i>
+          <span>Criteria</span>
+        </a>
+        <a class="nav-item" data-page="vendors">
+          <i class="fas fa-building"></i>
+          <span>Vendors</span>
+        </a>
+        <a class="nav-item" data-page="settings">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Admin User</span>
+            <span class="user-role">Quality Manager</span>
+          </div>
+        </div>
+        <div class="version">v2.0.1</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="page-title">Quality Dashboard</h1>
+          <div class="breadcrumb">
+            <span>Dashboard</span>
+            <i class="fas fa-chevron-right"></i>
+            <span>Overview</span>
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search inspections...">
+          </div>
+          
+          <div class="notifications">
+            <button class="icon-btn">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </button>
+          </div>
+          
+          <button id="newInspectionBtn" class="btn-primary">
+            <i class="fas fa-plus"></i>
+            <span>New Inspection</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <section class="dashboard-content active" id="dashboard-page">
+        <!-- KPI Cards with animations -->
+        <section class="cards">
+          <div class="card kpi animated-card">
+            <div class="kpi-icon">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-title">Today's Inspections</div>
+              <div id="kpi-count" class="kpi-value">0</div>
+              <div class="kpi-trend positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>12% from yesterday</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card kpi animated-card">
+            <div class="kpi-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-title">Pass Rate</div>
+              <div id="kpi-passrate" class="kpi-value">0%</div>
+              <div class="kpi-trend positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>5% improvement</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card kpi animated-card">
+            <div class="kpi-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-title">Issues Reported</div>
+              <div id="kpi-issues" class="kpi-value">0</div>
+              <div class="kpi-trend negative">
+                <i class="fas fa-arrow-down"></i>
+                <span>8% reduction</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card kpi animated-card">
+            <div class="kpi-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-title">Average Score</div>
+              <div id="kpi-avg" class="kpi-value">0/10</div>
+              <div class="kpi-trend positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>0.3 points up</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Charts and Data Section -->
+        <section class="dashboard-grid">
+          <div class="panel main-panel">
+            <div class="panel-header">
+              <h2>Recent Inspections</h2>
+              <div class="panel-actions">
+                <button class="btn-icon" id="refreshTable">
+                  <i class="fas fa-refresh"></i>
+                </button>
+                <button class="btn-icon" id="exportTable">
+                  <i class="fas fa-download"></i>
+                </button>
+                <div class="filter-dropdown">
+                  <button class="btn-icon">
+                    <i class="fas fa-filter"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="table-wrap" id="inspectionsTableWrap">
+              <table id="inspectionsTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Vendor</th>
+                    <th>Inspector</th>
+                    <th>Time</th>
+                    <th>Score</th>
+                    <th>Predicted</th>
+                    <th>Manager</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="panel-footer">
+              <div class="table-info">Showing <span id="tableCount">0</span> inspections</div>
+              <div class="pagination">
+                <button class="btn-icon" disabled>
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span>Page 1 of 1</span>
+                <button class="btn-icon" disabled>
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-sidebar">
+  <!-- Quick Inspection Actions -->
+  <div class="panel small">
+    <div class="panel-header">
+      <h2>Quick Actions</h2>
+    </div>
+    <div class="quick-actions">
+      <button class="quick-action-btn" onclick="ModalManager.open('inspectionModal')">
+        <i class="fas fa-plus-circle"></i>
+        <span>New Inspection</span>
+      </button>
+      <button class="quick-action-btn" onclick="ReportManager.exportAllInspections()">
+        <i class="fas fa-file-export"></i>
+        <span>Export All Data</span>
+      </button>
+      <button class="quick-action-btn" onclick="ReportManager.generateSummaryReport()">
+        <i class="fas fa-chart-bar"></i>
+        <span>Summary Report</span>
+      </button>
+      <button class="quick-action-btn" onclick="TableManager.showRecentInspections()">
+        <i class="fas fa-list"></i>
+        <span>View All</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Inspections for Quick Access -->
+  <div class="panel small">
+    <div class="panel-header">
+      <h2>Recent Inspections</h2>
+      <button class="btn-icon" onclick="TableManager.showRecentInspections()" title="View All">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+    <div class="recent-inspections-list" id="recentInspectionsList">
+      <!-- Recent inspections will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Report Templates -->
+  <div class="panel small">
+    <div class="panel-header">
+      <h2>Report Templates</h2>
+    </div>
+    <div class="report-templates">
+      <button class="template-btn" onclick="ReportManager.downloadTemplate('detailed')">
+        <i class="fas fa-file-alt"></i>
+        <span>Detailed Report</span>
+      </button>
+      <button class="template-btn" onclick="ReportManager.downloadTemplate('summary')">
+        <i class="fas fa-chart-pie"></i>
+        <span>Summary Report</span>
+      </button>
+      <button class="template-btn" onclick="ReportManager.downloadTemplate('vendor')">
+        <i class="fas fa-building"></i>
+        <span>Vendor Report</span>
+      </button>
+    </div>
+  </div>
+</div>
+        </section>
+      </section>
+
+      <!-- Other Pages (initially hidden) -->
+      <section class="page-content" id="inspections-page"></section>
+      <section class="page-content" id="reports-page"></section>
+      <section class="page-content" id="criteria-page"></section>
+      <section class="page-content" id="vendors-page"></section>
+      <section class="page-content" id="settings-page"></section>
+    </main>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="overlay hidden"></div>
+
+  <!-- New Inspection Modal -->
+  <div id="inspectionModal" class="modal hidden">
+    <div class="modal-header">
+      <h3>New Inspection — Clothing: Shirt</h3>
+      <button class="close" id="closeModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="inspectionForm" class="modal-body">
+      <div class="form-section">
+        <h4>Basic Information</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Product</label>
+            <input type="text" name="product" value="Shirt - Classic Cotton" required />
+          </div>
+          <div class="form-group">
+            <label>Vendor</label>
+            <select name="vendor" required>
+              <option value="Fashion Co.">Fashion Co.</option>
+              <option value="Fresh Tailors">Fresh Tailors</option>
+              <option value="Green Apparel">Green Apparel</option>
+              <option value="Premium Textiles">Premium Textiles</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Inspector</label>
+            <select name="inspector" required>
+              <option value="Inspector A">Inspector A</option>
+              <option value="Inspector B">Inspector B</option>
+              <option value="Inspector C">Inspector C</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Batch ID</label>
+            <input type="text" name="batchId" value="BATCH-2023-001" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>Quality Assessment</h4>
+        <fieldset>
+          <legend>Quality Criteria (0-10)</legend>
+          <div class="criteria-grid">
+            <div class="criteria-item">
+              <label>Fabric Quality</label>
+              <input type="range" name="fabric" min="0" max="10" step="0.5" value="8" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="fabric" data-direction="down">-</button>
+                <div class="range-value">8</div>
+                <button type="button" class="range-btn" data-target="fabric" data-direction="up">+</button>
+              </div>
+            </div>
+            <div class="criteria-item">
+              <label>Stitching</label>
+              <input type="range" name="stitching" min="0" max="10" step="0.5" value="8" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="stitching" data-direction="down">-</button>
+                <div class="range-value">8</div>
+                <button type="button" class="range-btn" data-target="stitching" data-direction="up">+</button>
+              </div>
+            </div>
+            <div class="criteria-item">
+              <label>Fit / Size</label>
+              <input type="range" name="fit" min="0" max="10" step="0.5" value="8" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="fit" data-direction="down">-</button>
+                <div class="range-value">8</div>
+                <button type="button" class="range-btn" data-target="fit" data-direction="up">+</button>
+              </div>
+            </div>
+            <div class="criteria-item">
+              <label>Color / Finish</label>
+              <input type="range" name="color" min="0" max="10" step="0.5" value="8" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="color" data-direction="down">-</button>
+                <div class="range-value">8</div>
+                <button type="button" class="range-btn" data-target="color" data-direction="up">+</button>
+              </div>
+            </div>
+            <div class="criteria-item">
+              <label>Packaging</label>
+              <input type="range" name="packaging" min="0" max="10" step="0.5" value="9" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="packaging" data-direction="down">-</button>
+                <div class="range-value">9</div>
+                <button type="button" class="range-btn" data-target="packaging" data-direction="up">+</button>
+              </div>
+            </div>
+            <div class="criteria-item">
+              <label>Labels / Tags</label>
+              <input type="range" name="labels" min="0" max="10" step="0.5" value="9" />
+              <div class="range-controls">
+                <button type="button" class="range-btn" data-target="labels" data-direction="down">-</button>
+                <div class="range-value">9</div>
+                <button type="button" class="range-btn" data-target="labels" data-direction="up">+</button>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-section">
+        <h4>Additional Information</h4>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Notes</label>
+            <textarea name="notes" placeholder="Any additional comments, issues found, or observations..."></textarea>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Product Image</label>
+            <div class="file-upload">
+              <input id="imgInput" type="file" accept="image/*" />
+              <label for="imgInput" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Choose Image</span>
+              </label>
+            </div>
+            <div id="imgPreview" class="img-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="button" class="btn-primary" id="predictBtn">
+          <i class="fas fa-bolt"></i>
+          <span>Predict & Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Details Modal -->
+  <div id="detailModal" class="modal hidden">
+    <div class="modal-header">
+      <h3>Inspection Details</h3>
+      <button class="close" id="closeDetail">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner" class="loading-spinner hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Scripts -->
+     <!-- Scripts -->
+  <script src="js/qms-app.js"></script>
+</body>
+</html>
+</body>
+</html>
